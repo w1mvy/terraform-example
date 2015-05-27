@@ -15,7 +15,8 @@ resource "aws_instance" "nginx" {
     inline = [
       "sudo apt-get update",
       "sudo apt-get install -y nginx",
-      "sudo /etc/init.d/nginx restart"
+      "sudo /etc/init.d/nginx restart",
+      "sudo apt-get install -y wget"
     ]
   }
 
