@@ -21,7 +21,7 @@ resource "aws_instance" "nginx" {
 
   security_groups = ["${aws_security_group.development.name}", "${aws_security_group.allow_ssh.name}"]
   depends_on = ["aws_security_group.development", "aws_security_group.allow_ssh"]
-  count = 3
+  count = 2
 }
 
 resource "aws_security_group" "development" {
