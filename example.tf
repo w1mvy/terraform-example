@@ -8,27 +8,26 @@ resource "aws_instance" "nginx" {
   ami = "ami-4ddffc4c"
   connection {
     user = "ubuntu"
-    key_file = "${var.key_path}"
   }
   instance_type = "t1.micro"
-  key_name = "${var.key_name}"
 
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
       "sudo apt-get install -y nginx",
-      "sudo /etc/init.d/nginx restart"
+      "sudo /etc/init.d/nginx restart",
+      "sudo apt-get install -y wget"
     ]
   }
 
   security_groups = ["${aws_security_group.development.name}", "${aws_security_group.allow_ssh.name}"]
   depends_on = ["aws_security_group.development", "aws_security_group.allow_ssh"]
+  count = 2
 }
 
 resource "aws_security_group" "development" {
   name = "development"
   description = "allow all traffic in development"
-  vpc_id = "${var.vpc_id}"
   ingress {
     from_port = 0
     to_port = 0
@@ -41,7 +40,6 @@ resource "aws_security_group" "development" {
 resource "aws_security_group" "allow_http" {
   name = "allow_http"
   description = "allow all inbound traffic"
-  vpc_id = "${var.vpc_id}"
 
   ingress {
     from_port = 80
@@ -60,7 +58,6 @@ resource "aws_security_group" "allow_http" {
 
 resource "aws_security_group" "allow_ssh" {
   name = "allow_ssh"
-  vpc_id = "${var.vpc_id}"
   ingress {
     from_port = 22
     to_port = 22
